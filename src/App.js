@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { SPANISH_FORMS, SPANISH_MODES, SPANISH_FORMS_TO_WORDS, SPANISH_LANGUAGE_CODE }  from './Spanish';
 import logo from './logo.svg';
 import axios from 'axios';
-import Q from 'q';
 import ParadigmsContainer from './ParadigmsContainer';
 import './App.css';
 import { doesNotReject } from 'assert';
@@ -23,33 +23,31 @@ class App extends Component {
   }
 
   getTranslatedForms() {
-    //console.log('got forms: hablo, hablas, habla');
+    console.log(SPANISH_FORMS);
     //console.log(this.state.inputvalue);
     var self = this;
     var queries = []
-    var forms = ["<pri>", "<imp>"]
-    var modes = ["<p1><sg>", "<p2><sg>", "<p3><sg>", "<p1><pl>", "<p2><pl>", "<p3><pl>"]
     var returnedForms = [];
-    for (var i = 0; i < forms.length; i++) {
+    for (var i = 0; i < SPANISH_FORMS.length; i++) {
       var formQueries = []
-      for (var j = 0; j < modes.length; j++) {
-          formQueries.push(this.state.inputvalue + "<vblex>" + forms[i] + modes[j]);
+      for (var j = 0; j < SPANISH_MODES.length; j++) {
+          formQueries.push(this.state.inputvalue + "<vblex>" + SPANISH_FORMS[i] + SPANISH_MODES[j]);
         }
-      queries.push([forms[i], formQueries]);
+      queries.push([SPANISH_FORMS[i], formQueries]);
     }
     
     var counter = 0
     for (i = 0; i < queries.length; i++) {
       var subj = queries[i][0];
       var returnedFormsForForm = [];
-      let promiseArray = queries[i][1].map(url => axios.get(APERTIUM_API_URL + 'generate?lang=spa&q=' + url));
+      let promiseArray = queries[i][1].map(url => axios.get(APERTIUM_API_URL + 'generate?lang=' + SPANISH_LANGUAGE_CODE + '&q=' + url));
       axios.all(promiseArray).then(function(results){
         let temp = []
         temp = results.map(r => r.data[0][0]);
         returnedFormsForForm= temp;
       })
       .then(function(){
-        returnedFormsForForm.push(forms[counter]);
+        returnedFormsForForm.push(SPANISH_FORMS_TO_WORDS[SPANISH_FORMS[counter]]);
         counter++;
         returnedForms.push([returnedFormsForForm]);
       })
@@ -80,7 +78,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header" title="Paradigm Generator">
-          <h1 className="App-title">Enter your verb below for generated paradigms</h1>
+          <h1 className="App-title">Enter your Spanish verb below for generated paradigms</h1>
         </header>
         <div className="Verb-selection">
         <form onSubmit={this.handleSubmit}>
