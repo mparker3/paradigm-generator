@@ -83,7 +83,7 @@ class App extends Component {
         <div className="Verb-selection">
         <form onSubmit={this.handleSubmit}>
           <label>
-            Name:
+            Verb:
           </label>
           <input type="text" value={this.state.value} onChange={this.handleChange}/>
           <input type="submit" value="Submit" />
